@@ -5,3 +5,5 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
+// This page is unprotected..
