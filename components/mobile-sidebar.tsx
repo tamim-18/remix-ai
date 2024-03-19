@@ -11,6 +11,7 @@ const MobileSidebar = () => {
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
+  if (!isMounted) return null;
   return (
     <Sheet>
       <SheetTrigger>
