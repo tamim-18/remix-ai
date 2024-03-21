@@ -1,6 +1,7 @@
 "use client";
 import { MessageSquare } from "lucide-react";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 
 import Heading from "@/components/heading";
 import { useForm } from "react-hook-form";
@@ -12,8 +13,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { ChatCompletionRequestMessage } from "openai";
+import Empty from "@/components/empty";
+import Loader from "@/components/loader";
+import { cn } from "@/lib/utils";
+import UserAvatar from "@/components/user-avatar";
+import BotAvatar from "@/components/bot-avatar";
 
 const Convesation = () => {
+  const router = useRouter();
+  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -27,7 +37,32 @@ const Convesation = () => {
 
   /// isloading is extracted from the form.useState, we can also use useState hook
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try {
+      const userMessage: ChatCompletionRequestMessage = {
+        role: "user",
+        content: values.prompt,
+      };
+      // setting the role
+      // setting the content of the user message
+
+      const newMessages = [...messages, userMessage];
+      // adding the user message to the messages
+
+      const response = await axios.post("/api/conversation", {
+        messages: newMessages,
+      });
+      // this is the post request to the backend
+
+      setMessages([...newMessages, response.data]);
+      // setting the messages to the new messages
+      form.reset();
+      // resetting the form
+    } catch (error: any) {
+      // tode open pro model
+      console.log(error);
+    } finally {
+      router.refresh();
+    }
   };
 
   // this is onsubmit method to submit the form content to the backend. the values are the content of the form.
@@ -85,7 +120,33 @@ const Convesation = () => {
             </form>
           </Form>
         </div>
-        <div className=" space-y-4 mt-4"></div>
+        <div className=" space-y-4 mt-4">
+          {messages.length === 0 && !isLoading && (
+            <Empty label="No conversation found" />
+          )}
+          {/* empty component */}
+          <div className=" flex flex-col-reverse gap-y-4">
+            {isLoading && (
+              <div className=" p-8 rounded-lg w-full flex items-center justify-center">
+                <Loader />
+              </div>
+            )}
+            {messages.map((message) => (
+              <div
+                key={message.content}
+                className={cn(
+                  " p-8 w-full flex items-start gap-x-8 rounded-lg",
+                  message.role === "user"
+                    ? "bg-violet-500/10 justify-end"
+                    : "bg-violet-500/20 justify-start"
+                )}
+              >
+                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                {message.content}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
