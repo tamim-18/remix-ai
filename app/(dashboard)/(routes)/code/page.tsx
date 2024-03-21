@@ -1,5 +1,5 @@
 "use client";
-import { MessageSquare } from "lucide-react";
+import { Code2, MessageSquare } from "lucide-react";
 
 import axios from "axios";
 import React, { useState } from "react";
@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import UserAvatar from "@/components/user-avatar";
 import BotAvatar from "@/components/bot-avatar";
 
-const Convesation = () => {
+const Code = () => {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,7 +49,7 @@ const Convesation = () => {
       const newMessages = [...messages, userMessage];
       // adding the user message to the messages
 
-      const response = await axios.post("/api/conversation", {
+      const response = await axios.post("/api/code", {
         messages: newMessages,
       });
       // this is the post request to the backend
@@ -71,11 +71,11 @@ const Convesation = () => {
   return (
     <div>
       <Heading
-        title="Convesation"
-        description="Convesation description"
-        icon={MessageSquare}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        title="Code Generation"
+        description="Code description"
+        icon={Code2}
+        iconColor="text-green-700"
+        bgColor="bg-green-700/10"
       />
       <div className=" px-4 lg:px-8">
         <div>
@@ -153,4 +153,4 @@ const Convesation = () => {
   );
 };
 
-export default Convesation;
+export default Code;
