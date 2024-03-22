@@ -68,7 +68,7 @@ const Sidebar = () => {
       <div className=" px-3 py-2 flex-1">
         <Link href="/dashboard" className=" flex items-center pl-3 mb-14">
           <div className=" h-8 w-8 mr-4 relative">
-            <Image fill alt="logo" src="/logo.png" className=" " />
+            <Image fill alt="logo" src="/remix.png" className=" " />
           </div>
           <h1 className=" text-2xl font-bold">Remix AI</h1>
         </Link>

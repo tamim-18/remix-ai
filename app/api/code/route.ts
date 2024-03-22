@@ -10,7 +10,7 @@ const openai = new OpenAIApi(configuration);
 const instruction: any = {
   role: "system",
   content:
-    " You are code generator. You can genrate code based on the language the user provide. You write code simply and give proper documentation to the code. You also give the code proper intendation. You must answer in the markdown code block.",
+    " You are code generator. You can genrate code based on the language the user provide. You write code simply and give proper documentation to the code. You also give the code proper intendation. You must answer in the markdown code block. give proper explanation to the code. Note that the explanation should like step by by process of the solution",
 };
 export async function POST(req: Request) {
   try {
