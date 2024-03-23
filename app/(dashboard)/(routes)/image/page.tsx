@@ -29,6 +29,7 @@ import {
 import { SelectValue } from "@radix-ui/react-select";
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
+import LoadingWidget from "@/components/LoadingWidgets";
 
 const ImagePage = () => {
   const router = useRouter();
@@ -191,6 +192,7 @@ const ImagePage = () => {
             <Empty label="No Images Found" />
           )}
           {/* empty component */}
+          {isLoading && <LoadingWidget />}
           <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
             {images.map((src) => (
               <Card key={src} className=" rounded-lg overflow-hidden">

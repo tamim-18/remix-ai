@@ -1,5 +1,5 @@
 "use client";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Music2 } from "lucide-react";
 
 import axios from "axios";
 import React, { useState } from "react";
@@ -15,17 +15,13 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { ChatCompletionRequestMessage } from "openai";
 import Empty from "@/components/empty";
 import Loader from "@/components/loader";
-import { cn } from "@/lib/utils";
-import UserAvatar from "@/components/user-avatar";
-import BotAvatar from "@/components/bot-avatar";
 import LoadingWidget from "@/components/LoadingWidgets";
 
-const Convesation = () => {
+const MusicPage = () => {
   const router = useRouter();
-  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+  const [music, setMusic] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,23 +36,12 @@ const Convesation = () => {
   /// isloading is extracted from the form.useState, we can also use useState hook
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage: ChatCompletionRequestMessage = {
-        role: "user",
-        content: values.prompt,
-      };
-      // setting the role
-      // setting the content of the user message
-
-      const newMessages = [...messages, userMessage];
-      // adding the user message to the messages
-
-      const response = await axios.post("/api/conversation", {
-        messages: newMessages,
-      });
+      setMusic(undefined);
+      const response = await axios.post("/api/music", values);
       // this is the post request to the backend
 
-      setMessages([...newMessages, response.data]);
       // setting the messages to the new messages
+      setMusic(response.data.audio);
       form.reset();
       // resetting the form
     } catch (error: any) {
@@ -72,11 +57,11 @@ const Convesation = () => {
   return (
     <div>
       <Heading
-        title="Convesation"
-        description="Convesation description"
-        icon={MessageSquare}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        title="Music"
+        description="Music description"
+        icon={Music2}
+        iconColor="text-emerald-500"
+        bgColor="bg-violet-700/10"
       />
       <div className=" px-4 lg:px-8">
         <div>
@@ -105,7 +90,7 @@ const Convesation = () => {
                       <Input
                         {...field}
                         disabled={isLoading}
-                        placeholder="eg: How can I solve my real life problem!!"
+                        placeholder="eg: Generate a song of Taylor Swift named Blank Space"
                         className=" border-0 outline-none focus-visible: ring-0 focus-visible: ring-transparent"
                       />
                       {/*  {...field} is used instead of manually wrting onBlur and so on*/}
@@ -123,31 +108,18 @@ const Convesation = () => {
           </Form>
         </div>
         <div className=" space-y-4 mt-4">
-          {messages.length === 0 && !isLoading && (
-            <Empty label="No conversation found" />
-          )}
+          {!music && !isLoading && <Empty label="No Music found" />}
           {/* empty component */}
-          <div className=" flex flex-col-reverse gap-y-4">
-            {isLoading && <LoadingWidget />}
-            {messages.map((message) => (
-              <div
-                key={message.content}
-                className={cn(
-                  " p-8 w-full flex items-start gap-x-8 rounded-lg",
-                  message.role === "user"
-                    ? "bg-violet-500/10 justify-end"
-                    : "bg-violet-500/20 justify-start"
-                )}
-              >
-                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                {message.content}
-              </div>
-            ))}
-          </div>
+          {isLoading && <LoadingWidget />}
+          {music && (
+            <audio controls className=" w-full mt-8">
+              <source src={music} />
+            </audio>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default Convesation;
+export default MusicPage;
