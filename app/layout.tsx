@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CrispProvider } from "@/components/ui/crisp-provider";
+import Chatbot from "@/components/chatbase";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,8 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <CrispProvider />
+        {/* <CrispProvider /> */}
+        <Chatbot />
         <body className={inter.className}>{children}</body>
       </html>
     </ClerkProvider>
