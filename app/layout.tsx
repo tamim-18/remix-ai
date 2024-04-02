@@ -22,6 +22,7 @@ export default function RootLayout({
       <html lang="en">
         {/* <CrispProvider /> */}
         <Chatbot />
+        {/* This is for chatbot */}
         <body className={inter.className}>{children}</body>
       </html>
     </ClerkProvider>
